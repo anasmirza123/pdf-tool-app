@@ -1,80 +1,137 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <script>
-      // Safe window.fetch getter/setter shim for iframe sandboxes
-      (function() {
-        try {
-          var _origFetch = typeof window !== 'undefined' && window.fetch ? window.fetch.bind(window) : undefined;
-          var _currFetch = _origFetch;
-          try {
-            Object.defineProperty(window, 'fetch', {
-              get: function() {
-                return _currFetch || _origFetch;
-              },
-              set: function(val) {
-                _currFetch = val;
-              },
-              configurable: true,
-              enumerable: true
-            });
-          } catch (e1) {
-            try {
-              var proto = Object.getPrototypeOf(window);
-              if (proto) {
-                Object.defineProperty(proto, 'fetch', {
-                  get: function() {
-                    return _currFetch || _origFetch;
-                  },
-                  set: function(val) {
-                    _currFetch = val;
-                  },
-                  configurable: true,
-                  enumerable: true
-                });
-              }
-            } catch (e2) {}
-          }
-        } catch (err) {}
-      })();
-    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="robots" content="index, follow" />
-    <title>DocuForge - PDF & Document Tools</title>
+
+    <!--
+      ==================================================================
+      DocuForge - index.html (single entry point for every route)
+      ------------------------------------------------------------------
+      This one file is served for EVERY URL (/, /merge-pdf, /blog/...)
+      because the app is a client-side single-page app. After React
+      loads, src/utils/seo.ts (applySEO) rewrites the title, description,
+      canonical, Open Graph / Twitter tags, robots and JSON-LD for the
+      current route. The tags below are therefore only the DEFAULTS that
+      crawlers and link-previews see when they do not run JavaScript.
+
+      Deliberately NOT set here: <link rel="canonical"> and og:url.
+      Since this file is shared by all routes, a hard-coded canonical
+      would wrongly point every page at the homepage. They are added
+      per-route by JavaScript instead.
+
+      BEFORE DEPLOYING: replace https://docuforge.app in the two image
+      URLs below (og:image, twitter:image) with your real domain. Do the
+      same in public/robots.txt. (VITE_SITE_URL in .env.example drives
+      the sitemap and the per-route tags.)
+      ==================================================================
+    -->
+
+    <title>DocuForge - PDF &amp; Document Tools</title>
     <meta name="description" content="Fast, secure, and private online tools to merge, split, compress, convert, rotate, OCR, and edit PDFs, images, and documents directly in your browser." />
-    <link rel="canonical" href="https://docuforge.app/" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
+    <!-- Appearance: the whole UI is dark (bg-slate-900 = #0f172a) -->
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0f172a" />
+    <style>
+      /* Prevents a white flash before the stylesheet and React load. */
+      html { background-color: #0f172a; color-scheme: dark; }
+    </style>
+
+    <!-- Icons and web app manifest -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="application-name" content="DocuForge" />
+    <meta name="apple-mobile-web-app-title" content="DocuForge" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- Open Graph (link previews on Facebook, LinkedIn, WhatsApp, Slack, ...) -->
     <meta property="og:site_name" content="DocuForge" />
-    <meta property="og:title" content="DocuForge - PDF & Document Tools" />
-    <meta property="og:description" content="Fast, secure, and private online tools to merge, split, compress, convert, rotate, OCR, and edit PDFs, images, and documents directly in your browser." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://docuforge.app/" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="DocuForge - PDF &amp; Document Tools" />
+    <meta property="og:description" content="Fast, secure, and private online tools to merge, split, compress, convert, rotate, OCR, and edit PDFs, images, and documents directly in your browser." />
+    <meta property="og:image" content="https://docuforge.app/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="DocuForge - free PDF and document tools that run privately in your browser" />
+
+    <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="DocuForge - PDF & Document Tools" />
+    <meta name="twitter:title" content="DocuForge - PDF &amp; Document Tools" />
     <meta name="twitter:description" content="Fast, secure, and private online tools to merge, split, compress, convert, rotate, OCR, and edit PDFs, images, and documents directly in your browser." />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <meta name="twitter:image" content="https://docuforge.app/og-image.png" />
+    <meta name="twitter:image:alt" content="DocuForge - free PDF and document tools that run privately in your browser" />
+
+    <!-- Fonts: connect early, load the stylesheet without blocking first paint -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap"
+      />
+    </noscript>
+
+    <!-- Default structured data. Replaced per route by applySEO() (same id). -->
     <script type="application/ld+json" id="page-jsonld">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "DocuForge",
-      "operatingSystem": "Any (runs in a web browser)",
-      "applicationCategory": "BusinessApplication",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "description": "All-in-one web document utility suite for PDF merging, splitting, compressing, page manipulation, image conversions, and OCR."
-    }
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "DocuForge",
+        "operatingSystem": "Any (runs in a web browser)",
+        "applicationCategory": "BusinessApplication",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "description": "All-in-one web document utility suite for PDF merging, splitting, compressing, page manipulation, image conversions, and OCR."
+      }
     </script>
   </head>
+
   <body class="bg-slate-900 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
+    <!-- Shown only when JavaScript is disabled; gives crawlers and users real content and links. -->
+    <noscript>
+      <div style="max-width:720px;margin:0 auto;padding:48px 20px;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#e2e8f0;line-height:1.6">
+        <h1 style="font-size:28px;margin:0 0 12px;color:#ffffff">DocuForge - PDF &amp; Document Tools</h1>
+        <p style="margin:0 0 16px">
+          Free online tools to merge, split, compress, convert, OCR, and edit PDFs, images, and documents.
+          DocuForge runs entirely in your browser, so <strong>JavaScript must be enabled</strong> to use the tools.
+        </p>
+        <nav aria-label="Popular tools">
+          <ul style="padding-left:20px;margin:0 0 16px">
+            <li><a href="/merge-pdf" style="color:#a5b4fc">Merge PDF</a></li>
+            <li><a href="/split-pdf" style="color:#a5b4fc">Split PDF</a></li>
+            <li><a href="/compress-pdf" style="color:#a5b4fc">Compress PDF</a></li>
+            <li><a href="/pdf-to-word" style="color:#a5b4fc">PDF to Word</a></li>
+            <li><a href="/word-to-pdf" style="color:#a5b4fc">Word to PDF</a></li>
+            <li><a href="/pdf-to-jpg" style="color:#a5b4fc">PDF to JPG</a></li>
+            <li><a href="/jpg-to-pdf" style="color:#a5b4fc">JPG to PDF</a></li>
+            <li><a href="/image-to-text" style="color:#a5b4fc">Image to Text (OCR)</a></li>
+            <li><a href="/tools" style="color:#a5b4fc">Browse all tools</a></li>
+          </ul>
+          <p style="margin:0;font-size:14px">
+            <a href="/blog" style="color:#a5b4fc">Blog</a> &middot;
+            <a href="/privacy" style="color:#a5b4fc">Privacy</a> &middot;
+            <a href="/terms" style="color:#a5b4fc">Terms</a> &middot;
+            <a href="/contact" style="color:#a5b4fc">Contact</a>
+          </p>
+        </nav>
+      </div>
+    </noscript>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-
