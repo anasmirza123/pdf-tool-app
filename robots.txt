@@ -1,0 +1,6 @@
+# Update the domain below to match your real deployed domain (see VITE_SITE_URL in .env.example)
+User-agent: *
+Allow: /
+Disallow: /admin
+
+Sitemap: https://docuforge.app/sitemap.xml
