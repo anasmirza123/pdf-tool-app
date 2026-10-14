@@ -16,9 +16,48 @@ import {
   buildBreadcrumbJsonLd
 } from './config/seo';
 
-// Lazy-loaded so each page's own dependencies (pdf-lib, tesseract.js, docx, etc.)
-// only download when that page is actually visited, instead of all landing in
-// the initial bundle every visitor has to fetch to see the homepage.
+// ============================================================
+// HASH-BASED ROUTING HELPERS
+// ------------------------------------------------------------
+// GitHub Pages par direct URL (e.g. /pdf-tool-app/merge-pdf) 404
+// deta hai kyunki wahan SPA fallback support nahi hai.
+//
+// Isliye hum URL ka HASH use karte hain:
+//   https://anasmirza123.github.io/pdf-tool-app/#/merge-pdf
+//   https://anasmirza123.github.io/pdf-tool-app/#/blog
+//   https://anasmirza123.github.io/pdf-tool-app/#/tools?cat=pdf
+//
+// GitHub Pages HAMESHA index.html serve karta hai, aur hash
+// client-side hota hai — so yeh 100% kaam karta hai.
+// ============================================================
+
+/**
+ * Current path ko window.location.hash se nikaalo.
+ * Examples:
+ *   URL: .../#/merge-pdf      → returns "/merge-pdf"
+ *   URL: .../#/tools?cat=pdf  → returns "/tools?cat=pdf"
+ *   URL: .../                 → returns "/"
+ *   URL: .../#                → returns "/"
+ */
+function getPathFromHash(): string {
+  const hash = window.location.hash;
+  if (!hash || hash === '#') return '/';
+  const raw = hash.startsWith('#') ? hash.slice(1) : hash;
+  return raw.startsWith('/') ? raw : `/${raw}`;
+}
+
+/**
+ * Programmatically navigate karo — hash update karo.
+ * hashchange event fire hoga, state update hogi, page re-render hoga.
+ */
+function setPathInHash(path: string) {
+  const clean = path.startsWith('/') ? path : `/${path}`;
+  window.location.hash = clean;
+}
+
+// ============================================================
+// LAZY-LOADED PAGES (same as before)
+// ============================================================
 const HomePage = lazy(() => import('./pages/HomePage').then((m) => ({ default: m.HomePage })));
 const ToolDirectoryPage = lazy(() => import('./pages/ToolDirectoryPage').then((m) => ({ default: m.ToolDirectoryPage })));
 const ToolPage = lazy(() => import('./pages/ToolPage').then((m) => ({ default: m.ToolPage })));
@@ -27,36 +66,46 @@ const LegalPage = lazy(() => import('./pages/LegalPage').then((m) => ({ default:
 const ContactPage = lazy(() => import('./pages/ContactPage').then((m) => ({ default: m.ContactPage })));
 const AdminDashboardPage = lazy(() => import('./pages/AdminDashboardPage').then((m) => ({ default: m.AdminDashboardPage })));
 
+// ============================================================
+// MAIN APP COMPONENT
+// ============================================================
 export default function App() {
-  const [currentPath, setCurrentPath] = useState<string>(() => {
-    return window.location.pathname || '/';
-  });
+  // Initialize from hash, not pathname
+  const [currentPath, setCurrentPath] = useState<string>(() => getPathFromHash());
   const [searchOpen, setSearchOpen] = useState(false);
 
-  // Sync route on popstate
+  // Listen for hash changes (back/forward buttons, manual edits, etc.)
   useEffect(() => {
-    const handlePopState = () => {
-      setCurrentPath(window.location.pathname || '/');
+    const handleHashChange = () => {
+      setCurrentPath(getPathFromHash());
     };
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+    window.addEventListener('hashchange', handleHashChange);
+
+    // On first load, if URL has no hash, set it to "/" so the address bar
+    // shows a clean #/ (optional but nice)
+    if (!window.location.hash) {
+      window.location.hash = '/';
+    }
+
+    return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
+  // Navigate function — same API as before, so Navbar/Footer don't need changes
   const navigate = (path: string) => {
     if (path === currentPath) return;
-    window.history.pushState({}, '', path);
+    setPathInHash(path);
+    // Immediate state update for snappy UI (hashchange will also fire)
     setCurrentPath(path);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // SEO: title, meta description, canonical, Open Graph/Twitter tags, robots and
-  // JSON-LD structured data are all kept in sync with the current route here.
-  // See src/utils/seo.ts for the documented limitation of doing this client-side
-  // in a non-prerendered SPA.
+  // ============================================================
+  // SEO EFFECT — same as before
+  // ============================================================
   useEffect(() => {
     const cleanPath = currentPath.split('?')[0].replace(/^\//, '');
 
-    // 1. Individual tool page (e.g. /merge-pdf, /compress-pdf)
+    // 1. Individual tool page
     const matchedTool = TOOLS_CONFIG.find((t) => t.slug === cleanPath);
     if (matchedTool) {
       applySEO({
@@ -68,8 +117,7 @@ export default function App() {
       return;
     }
 
-    // 2. Tool directory — every ?cat= filter is a view of the same page, so they all
-    // canonicalize to the bare /tools URL to avoid duplicate-content variants.
+    // 2. Tool directory
     if (cleanPath === 'tools') {
       applySEO({
         title: 'All PDF & Document Tools Catalog | DocuForge',
@@ -84,7 +132,7 @@ export default function App() {
       return;
     }
 
-    // 3. Blog index or an individual post
+    // 3. Blog
     if (cleanPath === 'blog' || cleanPath.startsWith('blog/')) {
       const slug = cleanPath.split('/')[1];
       const post = slug ? BLOG_POSTS.find((p) => p.slug === slug) : undefined;
@@ -124,7 +172,7 @@ export default function App() {
       return;
     }
 
-    // 4. Legal & trust pages
+    // 4. Legal
     if (cleanPath === 'privacy') {
       applySEO({
         title: 'Privacy Policy & Zero Retention Guarantee | DocuForge',
@@ -179,7 +227,7 @@ export default function App() {
       return;
     }
 
-    // 6. Admin dashboard — a demo/internal page, deliberately kept out of search results
+    // 6. Admin
     if (cleanPath === 'admin') {
       applySEO({
         title: 'Admin Dashboard | DocuForge',
@@ -203,7 +251,7 @@ export default function App() {
       return;
     }
 
-    // 8. Anything else is a genuine unknown route — keep it out of the index.
+    // 8. Unknown route
     applySEO({
       title: 'Page Not Found | DocuForge',
       description: 'The page you requested could not be found.',
@@ -213,7 +261,9 @@ export default function App() {
     });
   }, [currentPath]);
 
-  // Route Resolver
+  // ============================================================
+  // ROUTE RESOLVER — same as before
+  // ============================================================
   const renderCurrentRoute = () => {
     const [pathPart, queryPart] = currentPath.split('?');
     const cleanSlug = pathPart.replace(/^\//, '');
@@ -230,20 +280,20 @@ export default function App() {
       return <ToolDirectoryPage initialCategory={catParam} onNavigate={navigate} />;
     }
 
-    // 3. Individual Tool Page (e.g. /merge-pdf, /compress-pdf)
+    // 3. Individual Tool Page
     const tool = TOOLS_CONFIG.find((t) => t.slug === cleanSlug);
     if (tool) {
       return <ToolPage tool={tool} onNavigate={navigate} />;
     }
 
-    // 4. Blog & Articles
+    // 4. Blog
     if (cleanSlug.startsWith('blog')) {
       const parts = cleanSlug.split('/');
       const blogSlug = parts[1];
       return <BlogPage currentSlug={blogSlug} onNavigate={navigate} />;
     }
 
-    // 5. Legal Pages
+    // 5. Legal
     if (['privacy', 'terms', 'security'].includes(cleanSlug)) {
       return <LegalPage type={cleanSlug as any} onNavigate={navigate} />;
     }
@@ -253,12 +303,12 @@ export default function App() {
       return <ContactPage />;
     }
 
-    // 7. Admin Dashboard
+    // 7. Admin
     if (cleanSlug === 'admin') {
       return <AdminDashboardPage />;
     }
 
-    // Fallback: 404 Not Found
+    // Fallback: 404
     const popularTools = TOOLS_CONFIG.filter((t) => t.popular).slice(0, 6);
     return (
       <div className="mx-auto max-w-2xl px-4 py-24 text-center space-y-6">
@@ -292,16 +342,17 @@ export default function App() {
     );
   };
 
+  // ============================================================
+  // RENDER
+  // ============================================================
   return (
     <div className="min-h-screen flex flex-col bg-slate-900 text-slate-100 font-sans selection:bg-indigo-500 selection:text-white">
-      {/* Navbar */}
       <Navbar
         currentPath={currentPath}
         onNavigate={navigate}
         onOpenSearch={() => setSearchOpen(true)}
       />
 
-      {/* Main Content Viewport */}
       <main className="flex-1">
         <Suspense
           fallback={
@@ -314,10 +365,8 @@ export default function App() {
         </Suspense>
       </main>
 
-      {/* Footer */}
       <Footer onNavigate={navigate} />
 
-      {/* Quick Search Modal (⌘K) */}
       <SearchModal
         isOpen={searchOpen}
         onClose={() => setSearchOpen(false)}
