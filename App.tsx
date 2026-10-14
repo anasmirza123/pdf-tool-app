@@ -183,7 +183,7 @@ export default function App() {
     if (cleanPath === 'admin') {
       applySEO({
         title: 'Admin Dashboard | DocuForge',
-        description: 'Internal usage dashboard.',
+        description: 'Internal dashboard showing the tool history stored in this browser. Not intended for search engines.',
         canonical: absoluteUrl('/admin'),
         robots: 'noindex, nofollow',
         jsonLd: null
