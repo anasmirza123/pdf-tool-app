@@ -50,13 +50,6 @@ function setPathInHash(path: string) {
 // ============================================================
 // LAZY-LOADED PAGES (same as before)
 // ============================================================
-const HomePage = lazy(() => import('./pages/HomePage').then((m) => ({ default: m.HomePage })));
-const ToolDirectoryPage = lazy(() => import('./pages/ToolDirectoryPage').then((m) => ({ default: m.ToolDirectoryPage })));
-const ToolPage = lazy(() => import('./pages/ToolPage').then((m) => ({ default: m.ToolPage })));
-const BlogPage = lazy(() => import('./pages/BlogPage').then((m) => ({ default: m.BlogPage })));
-const LegalPage = lazy(() => import('./pages/LegalPage').then((m) => ({ default: m.LegalPage })));
-const ContactPage = lazy(() => import('./pages/ContactPage').then((m) => ({ default: m.ContactPage })));
-const AdminDashboardPage = lazy(() => import('./pages/AdminDashboardPage').then((m) => ({ default: m.AdminDashboardPage })));
 
 // ============================================================
 // MAIN APP COMPONENT
