@@ -1,12 +1,4 @@
-import { useState, useEffect, Suspense, lazy } from 'react';
-import { Navbar } from './components/Navbar';
-import { Footer } from './components/Footer';
-import { SearchModal } from './components/SearchModal';
-import { TOOLS_CONFIG } from './config/tools';
-import { BLOG_POSTS } from './config/blog';
-import { ToolCategory } from './types';
-import { applySEO } from './utils/seo';
-import {
+
   SITE_NAME,
   absoluteUrl,
   buildOrganizationJsonLd,
