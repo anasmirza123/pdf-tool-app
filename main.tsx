@@ -11,8 +11,55 @@
 //    to blank page ki jagah error message dikhe)
 // ============================================================
 
+// main.tsx — DocuForge entry point
+// GitHub Pages ke liye: koi router yahan NAHI (App khud handle karti hai)
+
 import React from "react";
 import ReactDOM from "react-dom/client";
+import App from "./App";
+import "./index.css";
+
+const rootElement = document.getElementById("root");
+
+if (!rootElement) {
+  throw new Error('Root element "#root" not found in index.html');
+}
+
+// ErrorBoundary (optional but helpful)
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error: Error | null }
+> {
+  state = { hasError: false, error: null as Error | null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    console.error("App crashed:", error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: 40, fontFamily: "system-ui", color: "#fca5a5", background: "#0f172a", minHeight: "100vh" }}>
+          <h1>App crashed</h1>
+          <pre style={{ whiteSpace: "pre-wrap" }}>{this.state.error?.message}</pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+ReactDOM.createRoot(rootElement).render(
+  <React.StrictMode>
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
+  </React.StrictMode>
+);
 
 // ------------------------------------------------------------
 // Router
