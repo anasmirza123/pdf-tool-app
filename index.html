@@ -340,7 +340,24 @@
         </nav>
       </div>
     </noscript>
+/* index.css */
+.nojs-links a {
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+.nojs-links a:hover {
+  color: #818cf8;
+  transform: translateX(4px);
+}
+    import { AnimatePresence } from "framer-motion";
+import { useLocation, Routes, Route } from "react-router-dom";
 
+const location = useLocation();
+
+<AnimatePresence mode="wait">
+  <Routes location={location} key={location.pathname}>
+    {/* routes */}
+  </Routes>
+</AnimatePresence>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
