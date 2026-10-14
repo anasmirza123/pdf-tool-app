@@ -13,7 +13,14 @@
 
 // main.tsx — DocuForge entry point
 // GitHub Pages ke liye: koi router yahan NAHI (App khud handle karti hai)
+<!-- Incorrect: File is in a 'js' folder but path is missing it -->
+<script src="app.js"></script>
 
+<!-- Correct: Path matches the actual file structure -->
+<script src="/js/app.js"></script>
+
+<!-- Correct: Ensure case sensitivity matches the filename exactly -->
+<img src="images/Logo_Final.png" alt="Logo">
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
