@@ -24,9 +24,219 @@
       URLs below (og:image, twitter:image) with your real domain. Do the
       same in public/robots.txt. (VITE_SITE_URL in .env.example drives
       the sitemap and the per-route tags.)
-      ==================================================================
-    -->
 
+  <!-- ============ 1. CORE META ============ -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f172a" />
+
+  <!-- ============ 2. TITLE + DESCRIPTION ============ -->
+  <title>ToolHub — Free Online PDF, Image &amp; OCR Tools</title>
+  <meta name="description" content="ToolHub is a free online toolbox: merge, split and compress PDFs, convert images, extract text with OCR and much more. No signup required." />
+
+  <!-- ============ 3. CANONICAL ============ -->
+  <link rel="canonical" href="https://www.yourdomain.com/" />
+
+  <!-- ============ 4. ICONS + MANIFEST ============ -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <!-- ============ 5. SITEMAP DISCOVERY ============ -->
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+  <!-- ============ 6. OPEN GRAPH / TWITTER ============ -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ToolHub" />
+  <meta property="og:title" content="ToolHub — Free Online PDF, Image &amp; OCR Tools" />
+  <meta property="og:description" content="Merge, split, compress and convert files right in your browser. Free, fast and private." />
+  <meta property="og:url" content="https://www.yourdomain.com/" />
+  <meta property="og:image" content="https://www.yourdomain.com/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- ============ 7. PERFORMANCE HINTS ============ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- ============ 8. STRUCTURED DATA ============ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "ToolHub",
+    "url": "https://www.yourdomain.com/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://www.yourdomain.com/tools?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <!-- ============ 9. STYLES FOR THE NO-JS LINK HUB ============ -->
+  <style>
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      background: #0f172a;
+      color: #fff;
+      padding: 10px 16px;
+      z-index: 9999;
+    }
+    .skip-link:focus { left: 0; }
+
+    .nojs-wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 24px 16px 64px;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+      color: #0f172a;
+    }
+    .nojs-wrap a { color: #1d4ed8; text-decoration: none; }
+    .nojs-wrap a:hover { text-decoration: underline; }
+    .nojs-nav ul,
+    .nojs-links ul { list-style: none; padding: 0; margin: 0; }
+    .nojs-nav ul { display: flex; flex-wrap: wrap; gap: 18px; }
+    .nojs-links ul { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px 24px; }
+    .nojs-wrap h1 { font-size: 1.9rem; margin: 28px 0 8px; }
+    .nojs-wrap h2 { font-size: 1.2rem; margin: 32px 0 12px; }
+    .nojs-wrap hr { border: 0; border-top: 1px solid #e2e8f0; margin: 40px 0 20px; }
+    .nojs-foot ul { display: flex; flex-wrap: wrap; gap: 16px; list-style: none; padding: 0; }
+  </style>
+</head>
+
+<body>
+  <!-- ============ 10. ACCESSIBILITY SKIP LINK ============ -->
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+
+  <!-- ============ 11. REACT MOUNT POINT ============ -->
+  <div id="root"></div>
+
+  <!-- ============ 12. INTERNAL LINK HUB (NO-JS / CRAWLER FALLBACK) ============ -->
+  <noscript>
+    <div class="nojs-wrap">
+
+      <!-- 12a. PRIMARY NAVIGATION -->
+      <header class="nojs-nav">
+        <a href="/" aria-label="ToolHub home">
+          <strong>ToolHub</strong>
+        </a>
+        <nav aria-label="Primary">
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/tools">All Tools</a></li>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/faq">FAQ</a></li>
+            <li><a href="/contact">Contact</a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <main id="main-content">
+        <h1>Free Online PDF, Image &amp; OCR Tools</h1>
+        <p>
+          Everything runs in your browser. Pick a tool below, or browse the
+          <a href="/tools">full tool directory</a>.
+        </p>
+
+        <!-- 12b. PDF TOOLS -->
+        <section>
+          <h2>PDF Tools</h2>
+          <div class="nojs-links">
+            <ul>
+              <li><a href="/tools/merge-pdf">Merge PDF</a></li>
+              <li><a href="/tools/split-pdf">Split PDF</a></li>
+              <li><a href="/tools/compress-pdf">Compress PDF</a></li>
+              <li><a href="/tools/pdf-to-word">PDF to Word</a></li>
+              <li><a href="/tools/pdf-to-jpg">PDF to JPG</a></li>
+              <li><a href="/tools/jpg-to-pdf">JPG to PDF</a></li>
+              <li><a href="/tools/rotate-pdf">Rotate PDF</a></li>
+              <li><a href="/tools/pdf-text-extractor">Extract PDF Text</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 12c. IMAGE TOOLS -->
+        <section>
+          <h2>Image Tools</h2>
+          <div class="nojs-links">
+            <ul>
+              <li><a href="/tools/image-compressor">Image Compressor</a></li>
+              <li><a href="/tools/image-converter">Image Converter</a></li>
+              <li><a href="/tools/image-resizer">Image Resizer</a></li>
+              <li><a href="/tools/png-to-jpg">PNG to JPG</a></li>
+              <li><a href="/tools/webp-converter">WebP Converter</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 12d. OCR + CONVERSION TOOLS -->
+        <section>
+          <h2>OCR &amp; Conversion</h2>
+          <div class="nojs-links">
+            <ul>
+              <li><a href="/tools/ocr">OCR Scanner</a></li>
+              <li><a href="/tools/image-to-text">Image to Text</a></li>
+              <li><a href="/tools/pdf-to-text">PDF to Text</a></li>
+              <li><a href="/tools/scanned-pdf-ocr">Scanned PDF OCR</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 12e. RELATED / CROSS-LINKS -->
+        <section>
+          <h2>Related Tools</h2>
+          <div class="nojs-links">
+            <ul>
+              <li><a href="/tools/merge-pdf">Merge PDF</a> pairs well with <a href="/tools/compress-pdf">Compress PDF</a></li>
+              <li><a href="/tools/pdf-to-jpg">PDF to JPG</a> pairs well with <a href="/tools/image-compressor">Image Compressor</a></li>
+              <li><a href="/tools/ocr">OCR Scanner</a> pairs well with <a href="/tools/pdf-text-extractor">Extract PDF Text</a></li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- 12f. CONTENT PAGES -->
+        <section>
+          <h2>Learn &amp; Support</h2>
+          <div class="nojs-links">
+            <ul>
+              <li><a href="/blog">Blog</a></li>
+              <li><a href="/faq">FAQ</a></li>
+              <li><a href="/contact">Contact Us</a></li>
+            </ul>
+          </div>
+        </section>
+      </main>
+
+      <!-- 12g. FOOTER LINKS -->
+      <hr />
+      <footer class="nojs-foot">
+        <nav aria-label="Footer">
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/tools">Tools</a></li>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/faq">FAQ</a></li>
+            <li><a href="/contact">Contact</a></li>
+            <li><a href="/legal/privacy-policy">Privacy Policy</a></li>
+            <li><a href="/legal/terms-of-service">Terms of Service</a></li>
+            <li><a href="/legal/cookie-policy">Cookie Policy</a></li>
+            <li><a href="/legal/disclaimer">Disclaimer</a></li>
+            <li><a href="/sitemap.xml">Sitemap</a></li>
+          </ul>
+        </nav>
+        <p>&copy; 2025 ToolHub. All rights reserved.</p>
+      </footer>
+
+    </div>
+  </noscript>
+
+  <!-- ============ 13. APP ENTRY POINT ============ -->
+  <script type="module" src="/main.tsx"></script>
     <title>DocuForge - PDF &amp; Document Tools</title>
     <meta name="description" content="Fast, secure, and private online tools to merge, split, compress, convert, rotate, OCR, and edit PDFs, images, and documents directly in your browser." />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
