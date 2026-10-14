@@ -10,7 +10,11 @@
 //  - ErrorBoundary lagaya hai (agar koi component crash ho
 //    to blank page ki jagah error message dikhe)
 // ============================================================
+<!-- Incorrect: Path assumes image is in the same folder -->
+<img src="logo.png">
 
+<!-- Correct: Path points to the actual 'images' subfolder -->
+<img src="/assets/images/logo.png">
 // main.tsx — DocuForge entry point
 // GitHub Pages ke liye: koi router yahan NAHI (App khud handle karti hai)
 <!-- Incorrect: File is in a 'js' folder but path is missing it -->
