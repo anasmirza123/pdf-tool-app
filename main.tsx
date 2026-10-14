@@ -1,114 +1,25 @@
 // ============================================================
 // main.tsx — DocuForge App Entry Point
 // ------------------------------------------------------------
-// Yeh file React app ko browser mein mount karti hai.
-// 
-// GitHub Pages ke liye special setup:
-//  - HashRouter use ho raha hai (kyunki GitHub Pages SPA
-//    fallback support nahi karta, aur direct URLs par 404 deta hai)
-//  - StrictMode on hai (development warnings ke liye)
-//  - ErrorBoundary lagaya hai (agar koi component crash ho
-//    to blank page ki jagah error message dikhe)
+// React app ko browser mein mount karta hai.
+//
+// GitHub Pages ke liye:
+//  - App.tsx khud hash routing handle karti hai
+//  - Isliye yahan KOI Router (HashRouter/BrowserRouter) NAHI
+//  - Sirf <App /> mount karo
 // ============================================================
-<!-- Incorrect: Path assumes image is in the same folder -->
-<img src="logo.png">
 
-<!-- Correct: Path points to the actual 'images' subfolder -->
-<img src="/assets/images/logo.png">
-// main.tsx — DocuForge entry point
-// GitHub Pages ke liye: koi router yahan NAHI (App khud handle karti hai)
-<!-- Incorrect: File is in a 'js' folder but path is missing it -->
-<script src="app.js"></script>
-
-<!-- Correct: Path matches the actual file structure -->
-<script src="/js/app.js"></script>
-
-<!-- Correct: Ensure case sensitivity matches the filename exactly -->
-<img src="images/Logo_Final.png" alt="Logo">
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
 
-const rootElement = document.getElementById("root");
-
-if (!rootElement) {
-  throw new Error('Root element "#root" not found in index.html');
-}
-
-// ErrorBoundary (optional but helpful)
-class ErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  { hasError: boolean; error: Error | null }
-> {
-  state = { hasError: false, error: null as Error | null };
-
-  static getDerivedStateFromError(error: Error) {
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error: Error, info: React.ErrorInfo) {
-    console.error("App crashed:", error, info);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div style={{ padding: 40, fontFamily: "system-ui", color: "#fca5a5", background: "#0f172a", minHeight: "100vh" }}>
-          <h1>App crashed</h1>
-          <pre style={{ whiteSpace: "pre-wrap" }}>{this.state.error?.message}</pre>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
-}
-
-ReactDOM.createRoot(rootElement).render(
-  <React.StrictMode>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
-  </React.StrictMode>
-);
-
-// ------------------------------------------------------------
-// Router
-// ------------------------------------------------------------
-// GitHub Pages ke liye HashRouter ZAROORI hai.
-// 
-// BrowserRouter:  https://site.com/pdf-tool-app/tools
-//                 ↑ yeh direct open karne par 404 dega
-//
-// HashRouter:     https://site.com/pdf-tool-app/#/tools
-//                 ↑ yeh hamesha kaam karega
-//
-// Agar aap Vercel/Netlify par deploy karein (jahan SPA
-// fallback support hai), to BrowserRouter use kar sakte hain.
-// Lekin GitHub Pages ke liye HashRouter he safest hai.
-import { HashRouter } from "react-router-dom";
-
-// ------------------------------------------------------------
-// Global styles
-// ------------------------------------------------------------
-// index.css mein Tailwind v4 ka `@import "tailwindcss";` hona chahiye
-import "./index.css";
-
-// ------------------------------------------------------------
-// Root App component
-// ------------------------------------------------------------
-import App from "./App";
-
-// ------------------------------------------------------------
+// ============================================================
 // Error Boundary
 // ------------------------------------------------------------
-// Agar App ke andar koi error aaye (e.g. undefined variable,
-// missing route), to yeh component use catch karega aur
-// blank page ki jagah readable error dikhayega.
-// 
-// Yeh debugging ke liye bohot useful hai — khaas taur par
-// jab GitHub Pages par deploy karein aur kuch galat ho.
-// ------------------------------------------------------------
+// Agar App ke andar koi error aaye to blank page ki jagah
+// readable error message dikhaye.
+// ============================================================
 interface ErrorBoundaryProps {
   children: React.ReactNode;
 }
@@ -132,7 +43,6 @@ class ErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Console mein full error log karo (debugging ke liye)
     console.error("App crashed:", error);
     console.error("Component stack:", errorInfo.componentStack);
   }
@@ -199,19 +109,14 @@ class ErrorBoundary extends React.Component<
   }
 }
 
+// ============================================================
+// Mount
 // ------------------------------------------------------------
-// Mount the app
-// ------------------------------------------------------------
-// `document.getElementById("root")` index.html ke
-// `<div id="root"></div>` ko target karta hai.
-// 
-// `!` (non-null assertion) TypeScript ko batata hai ki
-// yeh element zaroor milega (index.html mein hai).
-// ------------------------------------------------------------
+// index.html ke <div id="root"></div> ko target karo.
+// ============================================================
 const rootElement = document.getElementById("root");
 
 if (!rootElement) {
-  // Agar index.html mein #root missing hai to explicit error
   throw new Error(
     'Root element "#root" not found in index.html. ' +
     'Please check your index.html file.'
@@ -221,9 +126,7 @@ if (!rootElement) {
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <ErrorBoundary>
-      <HashRouter>
-        <App />
-      </HashRouter>
+      <App />
     </ErrorBoundary>
   </React.StrictMode>
 );
