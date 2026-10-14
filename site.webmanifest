@@ -1,5 +1,7 @@
 {
-  "name": "DocuForge - PDF & Document Tools",
+  <!-- Use the relative path to point to the correct subfolder -->
+<img src="assets/logo.png" alt="Logo">
+"name": "DocuForge - PDF & Document Tools",
   "short_name": "DocuForge",
   "description": "Fast, secure, and private online tools to merge, split, compress, convert, rotate, OCR, and edit PDFs, images, and documents directly in your browser.",
   "start_url": "/",
