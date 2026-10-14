@@ -1,9 +1,5 @@
-/* index.css */
-
-/* Tailwind v4 — yeh line SABSE PEHLE honi chahiye */
 @import "tailwindcss";
 
-/* Custom no-JS link hub styles (for the <noscript> block in index.html) */
 .nojs-links a {
   transition: color 0.2s ease, transform 0.2s ease;
 }
@@ -11,5 +7,3 @@
   color: #818cf8;
   transform: translateX(4px);
 }
-
-/* Aapki baaki global styles yahan... */
